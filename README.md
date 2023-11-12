@@ -7,7 +7,7 @@ In order to do this, we first need to scrape a lot of training data. The main id
 At the end, by using different methods, we try to retrieve the entire source code, i.e. additionally global variables, used headers, comments, pre-processors, typedef whereby some of these could again make use of further models. We need to make sure the entire source code should have the same context. If one function makes use of a global variable, then adjust the variable names accordingly, since the model retrieves the functions implementation independent from the rest of the binary.
 
 ## Table of Contents
-- [Current Stage of Development]
+- [Current Stage of Development](#current-stage-of-development)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
