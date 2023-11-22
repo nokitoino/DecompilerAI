@@ -18,6 +18,7 @@ At the end, by using different methods, we try to retrieve the entire source cod
 So far we only work with Linux ELF files. We propose an initial model that uses the T5-small model. An initial Github Scraper (we will later convert to using the Hugging Face Github Dataset), an initial training pair generator CodeToTrain.py, which already involves several homogenization steps for the assembly and C code, as well as an FSC.py (Full-Source-Retrieval) script, which takes as input an ELF binary file, and outputs the prediction for the high-level-C Code for the entire binary.
 
 Things we want to improve from now on:
+- The Scraper should be able to compile multi-source-code files (that use standard library, even some external libraries pcap, glib, ...)
 - The homogenization does not care about strings and global variables yet. (CodeToTrain.py)
 - The FSC does not care about consistency of variable names (FSC.py)
 - The FSC does not involve a proper method to retrieve headers (FSC.py)
