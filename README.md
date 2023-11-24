@@ -4,7 +4,8 @@ Converting Assembly back to C code using Transformers.
 The main goal of this project is to test different pretrained transformers like the Hugging Face T5 to predict the high-level C/C++ code from raw disassembly.
 In order to do this, we first need to scrape a lot of training data. The main idea is to train the Transformer function-wise. We compile our C Code to a binary executable, and diassemble it retrieving the assembly instructions for each function. The model should learn the seq-to-seq translation from Assembly instructions to C/C++ functions.
 
-At the end, by using different methods, we try to retrieve the entire source code, i.e. additionally global variables, used headers, comments, pre-processors, typedef whereby some of these could again make use of further models. We need to make sure the entire source code should have the same context. If one function makes use of a global variable, then adjust the variable names accordingly, since the model retrieves the functions implementation independent from the rest of the binary.
+At the end, by using different methods, we try to retrieve the entire source code, i.e. functions, global variables, used headers from the standard library, comments, pre-processors, typedef ect. 
+The goal is to retrieve the high-level C/C++ Code that is compileable and functional equivalent with the original binary file.
 
 ## Table of Contents
 - [Current Stage of Development](#current-stage-of-development)
@@ -15,7 +16,7 @@ At the end, by using different methods, we try to retrieve the entire source cod
 - [License](#license)
 
 ## Current Stage of Development
-So far we only work with Linux ELF files. We propose an initial model that uses the T5-small model. An initial Github Scraper (we will later convert to using the Hugging Face Github Dataset), an initial training pair generator CodeToTrain.py, which already involves several homogenization steps for the assembly and C code, as well as an FSC.py (Full-Source-Retrieval) script, which takes as input an ELF binary file, and outputs the prediction for the high-level-C Code for the entire binary.
+So far we only work with Linux ELF files. We propose an initial model that uses the T5-small model. An initial Github Scraper to scrape compileable C Code, an initial training pair generator CodeToTrain.py, which already involves several homogenization steps for the assembly and C code, as well as an FSC.py (Full-Source-Retrieval) script, which takes as input an ELF binary file, and outputs the prediction for the high-level-C Code for the entire binary.
 
 Things we want to improve from now on:
 - The Scraper should be able to compile multi-source-code files (that use standard library, even some external libraries pcap, glib, ...)
