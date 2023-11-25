@@ -20,11 +20,12 @@ So far we only work with Linux ELF files. We propose an initial model that uses 
 
 Things we want to improve from now on:
 - The Scraper should be able to compile multi-source-code files (that use standard library, even some external libraries pcap, glib, ...)
-- The homogenization does not care about strings and global variables yet. (CodeToTrain.py)
+- Substitute hard-coded strings from .rodata to the assembly instructions. (CodeToTrain.py)
+- The FSC is able to collect global variables with debug information, but not without. And it can also not connect them to functions yet, that make use of it, i.e. no name consistency. (FSC.py)
 - The FSC does not care about consistency of variable names (FSC.py)
-- The FSC does not involve a proper method to retrieve headers (FSC.py)
-- The model should be tested with different parameters
-- The T5-large should be tested, as it contains more Tokens
+- The FSC does not involve a proper method to retrieve headers. One can generate a mapping from symbols to libraries. keywords: "nm, readelf, library" (FSC.py)
+- The model should be tested with different hyper parameters. 
+- The T5-Large and LongT5 should be tested, as they trained with more parameters, and work more efficiently with larger Tokens.
 
 ## Installation
 
