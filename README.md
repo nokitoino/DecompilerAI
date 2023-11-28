@@ -1,4 +1,4 @@
-# RevEngAI
+# DecompilerAI
 Converting Assembly back to C code using Transformers.
 
 The main goal of this project is to test different pretrained transformers like the Hugging Face T5 to predict the high-level C/C++ code from raw disassembly.
