@@ -20,6 +20,7 @@ So far we only work with Linux ELF files. We propose an initial model that uses 
 
 Things we want to improve from now on:
 - The Scraper should be able to compile multi-source-code files (that use standard library, even some external libraries pcap, glib, ...)
+- Look into alternatives like Code Parrot to extract compileable C Code
 - Substitute hard-coded strings from .rodata to the assembly instructions. (CodeToTrain.py)
 - The FSC is able to collect global variables with debug information, but not without. And it can also not connect them to functions yet, that make use of it, i.e. no name consistency. (FSC.py)
 - The FSC does not care about consistency of variable names (FSC.py)
