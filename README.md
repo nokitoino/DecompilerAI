@@ -26,7 +26,7 @@ Things we want to improve from now on:
 - The FSC does not care about consistency of variable names/function names (FSC.py)
 - The FSC does not involve a proper method to retrieve headers. One can generate a mapping from symbols to libraries. keywords: "nm, readelf, library" (FSC.py)
 Furthermore, our idea is to execute the training over object files rather binary files. This experimental idea is subject to our new branch ObjectDecompiler.
-We opened a new branch to work on these problems: [v2](https://github.com/nokitoino/DecompilerAI/tree/ObjectDecompiler).
+We opened a new branch to work on these problems: [ObjectDecompiler](https://github.com/nokitoino/DecompilerAI/tree/ObjectDecompiler).
 
 ## Installation
 
