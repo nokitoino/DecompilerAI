@@ -1,7 +1,7 @@
 # DecompilerAI - ObjectDecompiler Branch
 The main goal of this project is to test different pretrained transformers like the Hugging Face T5 to predict the high-level C/C++ code from raw disassembly. In order to do this, we first need to scrape a lot of training data. The main idea is to train the Transformer function-wise. We compile our C Code to a binary executable, and diassemble it retrieving the assembly instructions for each function. The model should learn the seq-to-seq translation from Assembly instructions to C/C++ functions.
 
-In this branch we continue to work with ELF files, gcc and objdump. (Eventually, one might use more advanced disassemblers like radare2)
+In this branch we continue to work with ELF files, gcc and objdump. 
 In this branch we will focus on the implementations for the data collection (Scraper.py), data pre-processing (CodeToTrain.py), the training model (T5AssemblyC.ipynb), as well as the Full-Source-Code retrieval (FSC.py), while considering following extensions/modifications with respect to our initial commit (main branch):
 - Unlike the main branch, which collects and trains over simple compileable C files, we want to work with larger programs that consists of multiple source and header files. (Scraper.py, CodeToTrain.py)
 - Unlike the main branch, we want to train over the object files rather than the final compiled binary file.
