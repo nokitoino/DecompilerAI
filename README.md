@@ -17,16 +17,17 @@ The goal is to retrieve the high-level C/C++ Code that is compileable and functi
 - [License](#license)
 - 
 ## Current Stage of Development
-So far we only work with Linux ELF files and focus on the GCC compiler. We propose an initial model that uses the T5-base model, an initial Github Scraper to scrape compileable C Code, an initial training pair generator CodeToTrain.py, which already involves several homogenization steps for the assembly and C code, as well as an FSC.py (Full-Source-Retrieval) script, which takes as input an ELF binary file, and outputs the prediction of the high-level-C Code for the entire binary file.
+So far we only work with Linux ELF files and focus on the GCC compiler. We propose an initial model that uses the T5-base model (T5AssemblyC.ipynb), an initial Github Scraper to scrape simple compileable C Code (Scraper.py), an initial training pair generator (CodeToTrain.py), which already involves several homogenization steps for the assembly and C code, as well as a Full-Source-Retrieval script (FSC.py), which takes as input an ELF binary file, and outputs the prediction of the high-level-C Code for the entire binary file. The main branch will focus on a simple workflow to give you an idea of the Transformer capabilities. We will soon give you a replicateable workflow with explanation in [Usage](#usage).
 
 Things we want to improve from now on:
-- The Scraper should not be restricted to simple compileable source files. We should also collect larger programs that consists of multiple source and header files (using standard library, even some external libraries pcap, glib, ...) as training data.
-- The CodeToTrain.py should be able to involve the .rodata section of an ELF file in the training data generation, with the goal to retrieve global variables/strings/structs ...
-- The model should be able to work with larger Tokens (T5-Base was tested with moderate results on small functions, LongT5 might be a better alternative)
+- The Scraper should not be restricted to simple compileable source files. We should also collect larger programs that consists of multiple source and header files (using standard library, even some external libraries pcap, glib, ...) as training data. (Scraper.py)
+- The CodeToTrain.py has very straightforward homogenization techniques, which drops valueable informations like the sizes of offsets in the Assembly. This will impact the performance of the Transformer. In the future we will over engineer the homogenization.
+- The CodeToTrain.py should be able to involve the .rodata section of an ELF file in the training data generation, with the goal to retrieve global variables/strings/structs ... (CodeToTrain.py)
+- The model should be able to work with larger Tokens (T5-Base was tested with moderate results on small functions, LongT5 might be a better alternative) (T5AssemblyC.ipynb)
 - The FSC does not care about consistency of variable names/function names (FSC.py)
 - The FSC does not involve a proper method to retrieve headers. One can generate a mapping from symbols to libraries. keywords: "nm, readelf, library" (FSC.py)
-  
-We opened a new branch to work on this problems: ObjectDecompiler
+Furthermore, our idea is to execute the training over object files rather binary files. This experimental idea is subject to our new branch ObjectDecompiler.
+We opened a new branch to work on these problems: [v2](https://github.com/nokitoino/DecompilerAI/tree/ObjectDecompiler).
 
 ## Installation
 
