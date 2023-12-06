@@ -15,7 +15,6 @@ The goal is to retrieve the high-level C/C++ Code that is compileable and functi
 - [Future Plans](#future-plans)
 - [Acknowledgments](#acknowledgments)
 - [License](#license)
-- 
 ## Current Stage of Development
 So far we only work with Linux ELF files and focus on the GCC compiler. We propose an initial model that uses the T5-base model (T5AssemblyC.ipynb), an initial Github Scraper to scrape simple compileable C Code (Scraper.py), an initial training pair generator (CodeToTrain.py), which already involves several homogenization steps for the assembly and C code, as well as a Full-Source-Retrieval script (FSC.py), which takes as input an ELF binary file, and outputs the prediction of the high-level-C Code for the entire binary file. The main branch will focus on a simple workflow to give you an idea of the Transformer capabilities. We will soon give you a replicateable workflow with explanation in [Usage](#usage).
 
