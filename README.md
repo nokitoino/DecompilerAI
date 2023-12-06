@@ -11,6 +11,7 @@ In this branch we will focus on the implementations for the data collection (Scr
 
   Our training pairs will be: (homogenize(Disassembler(Assembler(Compiler(Preprocessor(C Code)))))), homogenize(C Code)) // no linking
   The inference will be: model(Homogenize(Unlink(Disassembler(Binary File))))
+  
   Be aware that assembly and disassembly are functional equivalent. The Assembler just loses information of comments, labels, pseudo-commands (for the Assembler) in the process. (Scraper.py, CodeToTrain.py)
 - The Scraper should not only find simple compileable source files, but also programs that consists of multiple source and header files.
   The goal is to recursively include the missing headers of a source file and compile it to an object file, and forward this to our CodeToTrain.py as training example together with the source code. (Scraper.py)
