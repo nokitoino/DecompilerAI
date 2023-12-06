@@ -19,7 +19,7 @@ In this branch we will focus on the implementations for the data collection (Scr
 - The model should use LongT5 for training, since other models are heavily restricted with the Token size (T5AssemblyC.ipynb)
 - The FSC should find neccessary standard libraries, and use consistent names for functions. One could ignore the process to retrieve global variables. The functions that make use of it, will just directly work with the values rather than labels of global varaibles. That's how Assembly works anyways, one always makes reference to the exact memory address. We hope to fix this problem by asking the model for prediction on a homogenized disassembly and a snippet of the relevant .rodata memory table (FSC.py)
 
-## Acknowledgments
+## Installation, Usage, Contributing, Acknowledgments
 
 Please check the main branch.
 
