@@ -31,17 +31,21 @@ We opened a new branch to work on these problems: [ObjectDecompiler](https://git
 ## Installation
 Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows.
 ### Install Python3
-Make sure you have installed python3 by  python3 --version.
+Make sure you have installed python3 by  `python3 --version`.
 ### Install torch and transformers library
+```
 pip install torch
 pip install transformers
 pip install sentencepiece
+```
+
 ### Additional dependencies
+```
 sudo apt install clang-format
 sudo apt-get install build-essential
 pip install tree_sitter
 git clone https://github.com/tree-sitter/tree-sitter-c
-
+```
 The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
 In the FSC.py we use clang-format to format our final retrieved soruce code.
 
