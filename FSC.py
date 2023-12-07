@@ -1,135 +1,157 @@
 """
-This script tries to recover the source code of an ELF file which was compiled with debug information.
-Simply execute:
+This script tries to recover the source code of an ELF file that was compiled with debug information.
+For experimental reasons we commented the retrieval of global variables, so we can execute this script with no debug information.
+
+HOW TO USE:
 python3 FSC.py elf_file
-This script can be modified to recover the source code without debug information, but by executing the program and an error-prone task to retrieve the values of the variables by the absolute adresses.
+
+Output: source.c, which contains the predicted C Code for our small simple program.
+
+This script is just a quick experimental demonstration of our model that was trained on about 10k simple compileable C files.
+The model has a size of 851 MB and is publicly available at https://huggingface.co/nokitoino/gccDecompilerExperimental/tree/main.
+The model was trained on the BwUniCluster 2.0 on one Nvidia Tesla V100 for about 2-3 hours using T5-Base.
+In the future we will publish detailed train/val loss graphs.
+
+The model is quite useless in its current state, and we do not intend to upload any other model for ethical purposes.
+Do not execute this script on property that does not belong to you.
+We always respect the intellectual property of others.
+
+
+There is alot of improvements to be done here.
+
+Developed by Akin Yilmaz.
 """
 import argparse
 import subprocess
 import re
+
+#We need to load the model to ask predictions.
+from transformers import T5Tokenizer, T5ForConditionalGeneration, AdamW
+import torch
+
 parser = argparse.ArgumentParser("FSC")
 parser.add_argument("file", help="ELF file of which we recover the full source code")
 args = parser.parse_args()
 
-
 symbol_header_mapping = {
     "#include <stdio.h>": [
-        "printf@GLIBC_2.2.5",
-        "fprintf@GLIBC_2.2.5",
-        "sprintf@GLIBC_2.2.5",
-        "snprintf@GLIBC_2.2.5",
-        "fopen@GLIBC_2.2.5",
-        "fclose@GLIBC_2.2.5",
-        "fgets@GLIBC_2.2.5",
-        "fputs@GLIBC_2.2.5",
-        "fread@GLIBC_2.2.5",
-        "fwrite@GLIBC_2.2.5",
+        "printf@@GLIBC_2.2.5",
+        "fprintf@@GLIBC_2.2.5",
+        "sprintf@@GLIBC_2.2.5",
+        "snprintf@@GLIBC_2.2.5",
+        "fopen@@GLIBC_2.2.5",
+        "fclose@@GLIBC_2.2.5",
+        "fgets@@GLIBC_2.2.5",
+        "fputs@@GLIBC_2.2.5",
+        "fread@@GLIBC_2.2.5",
+        "fwrite@@GLIBC_2.2.5",
     ],
     "#include <stdlib.h>": [
-        "malloc@GLIBC_2.2.5",
-        "free@GLIBC_2.2.5",
-        "calloc@GLIBC_2.2.5",
-        "realloc@GLIBC_2.2.5",
-        "atoi@GLIBC_2.2.5",
-        "atof@GLIBC_2.2.5",
-        "rand@GLIBC_2.2.5",
-        "srand@GLIBC_2.2.5",
-        "abs@GLIBC_2.2.5",
-        "labs@GLIBC_2.2.5",
+        "malloc@@GLIBC_2.2.5",
+        "free@@GLIBC_2.2.5",
+        "calloc@@GLIBC_2.2.5",
+        "realloc@@GLIBC_2.2.5",
+        "atoi@@GLIBC_2.2.5",
+        "atof@@GLIBC_2.2.5",
+        "rand@@GLIBC_2.2.5",
+        "srand@@GLIBC_2.2.5",
+        "abs@@GLIBC_2.2.5",
+        "labs@@GLIBC_2.2.5",
     ],
     "#include <string.h>": [
-        "strcpy@GLIBC_2.2.5",
-        "strncpy@GLIBC_2.2.5",
-        "strlen@GLIBC_2.2.5",
-        "strcmp@GLIBC_2.2.5",
-        "strcat@GLIBC_2.2.5",
-        "strncat@GLIBC_2.2.5",
-        "strstr@GLIBC_2.2.5",
-        "strtok@GLIBC_2.2.5",
-        "strpbrk@GLIBC_2.2.5",
-        "strrchr@GLIBC_2.2.5",
+        "strcpy@@GLIBC_2.2.5",
+        "strncpy@@GLIBC_2.2.5",
+        "strlen@@GLIBC_2.2.5",
+        "strcmp@@GLIBC_2.2.5",
+        "strcat@@GLIBC_2.2.5",
+        "strncat@@GLIBC_2.2.5",
+        "strstr@@GLIBC_2.2.5",
+        "strtok@@GLIBC_2.2.5",
+        "strpbrk@@GLIBC_2.2.5",
+        "strrchr@@GLIBC_2.2.5",
     ],
     "#include <math.h>": [
-        "sin@GLIBC_2.2.5",
-        "cos@GLIBC_2.2.5",
-        "tan@GLIBC_2.2.5",
-        "sqrt@GLIBC_2.2.5",
-        "pow@GLIBC_2.2.5",
-        "log@GLIBC_2.2.5",
-        "exp@GLIBC_2.2.5",
-        "log10@GLIBC_2.2.5",
-        "ceil@GLIBC_2.2.5",
-        "floor@GLIBC_2.2.5",
+        "sin@@GLIBC_2.2.5",
+        "cos@@GLIBC_2.2.5",
+        "tan@@GLIBC_2.2.5",
+        "sqrt@@GLIBC_2.2.5",
+        "pow@@GLIBC_2.2.5",
+        "log@@GLIBC_2.2.5",
+        "exp@@GLIBC_2.2.5",
+        "log10@@GLIBC_2.2.5",
+        "ceil@@GLIBC_2.2.5",
+        "floor@@GLIBC_2.2.5",
     ],
     "#include <unistd.h>": [
-        "write@GLIBC_2.2.5",
-        "read@GLIBC_2.2.5",
-        "close@GLIBC_2.2.5",
-        "fork@GLIBC_2.2.5",
-        "pipe@GLIBC_2.2.5",
-        "dup@GLIBC_2.2.5",
-        "getpid@GLIBC_2.2.5",
-        "sleep@GLIBC_2.2.5",
-        "usleep@GLIBC_2.2.5",
+        "write@@GLIBC_2.2.5",
+        "read@@GLIBC_2.2.5",
+        "close@@GLIBC_2.2.5",
+        "fork@@GLIBC_2.2.5",
+        "pipe@@GLIBC_2.2.5",
+        "dup@@GLIBC_2.2.5",
+        "getpid@@GLIBC_2.2.5",
+        "sleep@@GLIBC_2.2.5",
+        "usleep@@GLIBC_2.2.5",
     ],
     "#include <pthread.h>": [
-        "pthread_create@GLIBC_2.2.5",
-        "pthread_join@GLIBC_2.2.5",
-        "pthread_mutex_lock@GLIBC_2.2.5",
-        "pthread_mutex_unlock@GLIBC_2.2.5",
-        "pthread_cond_wait@GLIBC_2.2.5",
-        "pthread_cond_signal@GLIBC_2.2.5",
-        "pthread_rwlock_init@GLIBC_2.2.5",
-        "pthread_rwlock_destroy@GLIBC_2.2.5",
-        "pthread_rwlock_rdlock@GLIBC_2.2.5",
-        "pthread_rwlock_wrlock@GLIBC_2.2.5",
+        "pthread_create@@GLIBC_2.2.5",
+        "pthread_join@@GLIBC_2.2.5",
+        "pthread_mutex_lock@@GLIBC_2.2.5",
+        "pthread_mutex_unlock@@GLIBC_2.2.5",
+        "pthread_cond_wait@@GLIBC_2.2.5",
+        "pthread_cond_signal@@GLIBC_2.2.5",
+        "pthread_rwlock_init@@GLIBC_2.2.5",
+        "pthread_rwlock_destroy@@GLIBC_2.2.5",
+        "pthread_rwlock_rdlock@@GLIBC_2.2.5",
+        "pthread_rwlock_wrlock@@GLIBC_2.2.5",
     ],
     "#include <netinet/in.h>": [
-        "socket@GLIBC_2.2.5",
-        "bind@GLIBC_2.2.5",
-        "listen@GLIBC_2.2.5",
-        "accept@GLIBC_2.2.5",
-        "inet_addr@GLIBC_2.2.5",
-        "htons@GLIBC_2.2.5",
-        "htonl@GLIBC_2.2.5",
-        "ntohs@GLIBC_2.2.5",
-        "ntohl@GLIBC_2.2.5",
+        "socket@@GLIBC_2.2.5",
+        "bind@@GLIBC_2.2.5",
+        "listen@@GLIBC_2.2.5",
+        "accept@@GLIBC_2.2.5",
+        "inet_addr@@GLIBC_2.2.5",
+        "htons@@GLIBC_2.2.5",
+        "htonl@@GLIBC_2.2.5",
+        "ntohs@@GLIBC_2.2.5",
+        "ntohl@@GLIBC_2.2.5",
     ],
     "#include <sys/types.h>": [
-        "open@GLIBC_2.2.5",
-        "close@GLIBC_2.2.5",
-        "read@GLIBC_2.2.5",
-        "write@GLIBC_2.2.5",
-        "lseek@GLIBC_2.2.5",
-        "stat@GLIBC_2.2.5",
-        "fstat@GLIBC_2.2.5",
-        "unlink@GLIBC_2.2.5",
-        "rename@GLIBC_2.2.5",
+        "open@@GLIBC_2.2.5",
+        "close@@GLIBC_2.2.5",
+        "read@@GLIBC_2.2.5",
+        "write@@GLIBC_2.2.5",
+        "lseek@@GLIBC_2.2.5",
+        "stat@@GLIBC_2.2.5",
+        "fstat@@GLIBC_2.2.5",
+        "unlink@@GLIBC_2.2.5",
+        "rename@@GLIBC_2.2.5",
     ],
     "#include <time.h>": [
-        "clock@GLIBC_2.2.5",
-        "time@GLIBC_2.2.5",
-        "ctime@GLIBC_2.2.5",
-        "difftime@GLIBC_2.2.5",
-        "strftime@GLIBC_2.2.5",
-        "localtime@GLIBC_2.2.5",
-        "mktime@GLIBC_2.2.5",
-        "gmtime@GLIBC_2.2.5",
-        "asctime@GLIBC_2.2.5",
+        "clock@@GLIBC_2.2.5",
+        "time@@GLIBC_2.2.5",
+        "ctime@@GLIBC_2.2.5",
+        "difftime@@GLIBC_2.2.5",
+        "strftime@@GLIBC_2.2.5",
+        "localtime@@GLIBC_2.2.5",
+        "mktime@@GLIBC_2.2.5",
+        "gmtime@@GLIBC_2.2.5",
+        "asctime@@GLIBC_2.2.5",
     ],
     "#include <fcntl.h>": [
-        "open@GLIBC_2.2.5",
-        "close@GLIBC_2.2.5",
-        "read@GLIBC_2.2.5",
-        "write@GLIBC_2.2.5",
-        "fcntl@GLIBC_2.2.5",
-        "ioctl@GLIBC_2.2.5",
-        "pipe2@GLIBC_2.2.5",
-        "dup2@GLIBC_2.2.5",
-        "select@GLIBC_2.2.5",
+        "open@@GLIBC_2.2.5",
+        "close@@GLIBC_2.2.5",
+        "read@@GLIBC_2.2.5",
+        "write@@GLIBC_2.2.5",
+        "fcntl@@GLIBC_2.2.5",
+        "ioctl@@GLIBC_2.2.5",
+        "pipe2@@GLIBC_2.2.5",
+        "dup2@@GLIBC_2.2.5",
+        "select@@GLIBC_2.2.5",
     ],
     # Add more headers and symbols as needed...
 }
+
 
 def getObjectdump(file):
     objdump_command = f"objdump -d -M intel {file}"
@@ -147,12 +169,12 @@ def getHeaders(file):
             line = line.split()[-1]
             if not line[0] == "_":
                 headers_symbol.append(line)
-
     for header_symbol in headers_symbol:
         for header_dict, symbols in symbol_header_mapping.items():
-            if header_symbol in symbols:
-                output.append(header_dict)
-                break
+            for symbol in symbols:
+                if header_symbol in symbol:
+                    output.append(header_dict)
+                    break
         else:
             ...
             #print(f"The symbol '{header_symbol}' was not found in the dictionary.")
@@ -318,8 +340,11 @@ def getFunctionPatterns(objdump, function_names):
             if "<" + function + ">:" in line:
                 patterns.append(line)
     return patterns
-def predict(assembly_string):
-    ...
+
+def predict(tokenizer, model, input_sequence):
+    input_ids = tokenizer(input_sequence, return_tensors="pt").input_ids.to(device)
+    outputs = model.generate(input_ids, max_length=300, num_return_sequences=1)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
 if args.file:
     objdump = getObjectdump(args.file)
     function_names = getFunctionNames(args.file)
@@ -357,18 +382,35 @@ if args.file:
     C_Code_globalVariables = ""
     C_Code_functions = ""
 
-    C_Code_includes = "\n".join(includes)
-    for i in range(len(variables)):
-        C_Code_globalVariables+=f"\n{types[i]} {variables[i]}  = {values[i]}"
+    C_Code_includes = "\n".join(includes)+"\n"
+    #for i in range(len(variables)):
+    #    C_Code_globalVariables+=f"\n{types[i]} {variables[i]}  = {values[i]}"
 
+    #Prepare the model to execute locally
+    seed = 42
+    torch.manual_seed(seed) #For deterministic outputs, can be commented out.
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    tokenizer = T5Tokenizer.from_pretrained("nokitoino/gccDecompilerExperimental")
+    model = T5ForConditionalGeneration.from_pretrained("nokitoino/gccDecompilerExperimental").to(device)
 
-    #print(assembly)
     predictions = []
     for function_assembly in assembly:
-        ...
-        #predictions.append(predict(function_assembly))  #ASK THE MODEL FOR PREDICTION HERE
+        predictions.append(predict(tokenizer, model,function_assembly))  #ASK THE MODEL FOR PREDICTION HERE
+    C_Code_functions = "\n".join(predictions)
+
     C_Code = C_Code_includes+C_Code_globalVariables+C_Code_functions
 
+    print(C_Code_includes)
+    # Save the predictions to a temporary file
+    temp_file_path = "source.c"
+    with open(temp_file_path, "w") as temp_file:
+        temp_file.write(C_Code)
 
+    # Use clang-format to beautify the C code
+    clang_format_command = f"clang-format -i {temp_file_path}"
+    subprocess.run(clang_format_command, shell=True)
 
-    print(C_Code)
+    # Read the beautified code back
+    with open(temp_file_path, "r") as temp_file:
+        beautified_code = temp_file.read()
+    print(beautified_code)
