@@ -9,8 +9,8 @@ In this branch we will focus on the implementations for the data collection (Scr
   We do not require all source files to be compileable (due to missing libraries or errors) and can collect much more training data that would otherwise be ignored.
   But we have to be consistent when doing the inference. We have to "reduce" the disassembly of an already linked binary file to an object file, undo what the linker did and homogenize it.
 
-  Our training pairs will be: (homogenize(Disassembler(Assembler(Compiler(Preprocessor(C Code)))))), homogenize(C Code)) // no linking
-  The inference will be: model(Homogenize(Unlink(Disassembler(Binary File))))
+  Our training pairs will be: `(homogenize(Disassembler(Assembler(Compiler(Preprocessor(C Code)))))), homogenize(C Code)) // no linking`
+  The inference will be: `model(Homogenize(Unlink(Disassembler(Binary File))))`
   
   Be aware that assembly and disassembly are functional equivalent. The Assembler just loses information of comments, labels, pseudo-commands (for the Assembler) in the process. (Scraper.py, CodeToTrain.py)
 - The Scraper should not only find simple compileable source files, but also programs that consists of multiple source and header files.
