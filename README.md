@@ -30,13 +30,13 @@ We opened a new branch to work on these problems: [ObjectDecompiler](https://git
 
 ## Installation
 Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows.
-# Install Python3
+### Install Python3
 Make sure you have installed python3 by  python3 --version.
-# Install torch and transformers library
+### Install torch and transformers library
 pip install torch
 pip install transformers
 pip install sentencepiece
-# Additional dependencies
+### Additional dependencies
 sudo apt install clang-format
 sudo apt-get install build-essential
 pip install tree_sitter
