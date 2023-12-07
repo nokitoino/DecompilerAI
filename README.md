@@ -29,9 +29,23 @@ Furthermore, our idea is to execute the training over object files rather binary
 We opened a new branch to work on these problems: [ObjectDecompiler](https://github.com/nokitoino/DecompilerAI/tree/ObjectDecompiler).
 
 ## Installation
+Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows.
+# Install Python3
+Make sure you have installed python3 by  python3 --version.
+# Install torch and transformers library
+pip install torch
+pip install transformers
+pip install sentencepiece
+# Additional dependencies
+sudo apt install clang-format
+sudo apt-get install build-essential
+pip install tree_sitter
+git clone https://github.com/tree-sitter/tree-sitter-c
 
-Instructions for how to install your project or any dependencies it may have. Incoming...
+The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
+In the FSC.py we use clang-format to format our final retrieved soruce code.
 
+Your directory should now consist: tree-sitter-c/, CodeToTrain.py, Scraper.py, FSC.py
 ## Usage
 
 We are currently setting up the main branch, so you can replicate the workflow of scraping, training, and inference. We will also explain the usage very soon.
