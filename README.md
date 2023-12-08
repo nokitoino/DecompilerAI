@@ -11,6 +11,7 @@ The goal is to retrieve the high-level C/C++ Code that is compileable and functi
 - [Current Stage of Development](#current-stage-of-development)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Requirements](#hardwarerequirements)
 - [Contributing](#contributing)
 - [Future Plans](#future-plans)
 - [Acknowledgments](#acknowledgments)
@@ -29,30 +30,45 @@ Furthermore, our idea is to execute the training over object files rather binary
 We opened a new branch to work on these problems: [ObjectDecompiler](https://github.com/nokitoino/DecompilerAI/tree/ObjectDecompiler).
 
 ## Installation
-Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows.
-### Install Python3
-Make sure you have installed python3 by  `python3 --version`.
-### Install torch and transformers library
+Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows. To train the model effectively please check [Hardware Requirements](#hardwarerequirements).
+### Clone the branch
+```clone git clone -b main https://github.com/nokitoino/DecompilerAI.git```
+### Install Python modules
+Make sure you have installed python3 by  `python3 --version` and Jupyter Notebook.
+First, install the required python modules.
+#### Install python modules automatically
+```
+pip install -r requirements.txt
+```
+#### Alternative: Install python modules manually
 ```
 pip install torch
 pip install transformers
 pip install sentencepiece
+pip install matplotlib
+pip install scikit-learn
+pip install tree_sitter
+pip install tqdm
+
 ```
 
-### Additional dependencies
+### Install additional libraries
 ```
 sudo apt install clang-format
 sudo apt-get install build-essential
-pip install tree_sitter
 git clone https://github.com/tree-sitter/tree-sitter-c
 ```
-The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
-In the FSC.py we use clang-format to format our final retrieved soruce code.
+Why the libraries?: The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
+In the FSC.py we use clang-format to format our final retrieved source code.
 
-Your directory should now consist: tree-sitter-c/, CodeToTrain.py, Scraper.py, FSC.py
 ## Usage
+Your directory should now consist: tree-sitter-c/, CodeToTrain.py, Scraper.py, FSC.py, T5AssemblyC.ipynb
 
 We are currently setting up the main branch, so you can replicate the workflow of scraping, training, and inference. We will also explain the usage very soon.
+
+## Hardware Requirements
+The model was trained on one GPU of NVIDIA V100 TESLA 32GB.
+The other scripts were run on Intel Core i7-9570H CPU, NVIDIA GTX 1660 TI 6GB, 16 GB RAM. You should be able to run them on lower specs.
 
 ## Contributing
 
