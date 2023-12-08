@@ -1,9 +1,18 @@
+'''
+This script creates from a directory of C files training pairs of the form (C Code, Disassembly).
+
+HOW TO USE:
+1. Move all the C files into a local directory called C_COMPILE. Note: The Scraper does this automatically.
+2. python3 CodeToTrain.py
+You fill find two text files in your local directory: function.txt and assembly.txt that contain the training data, which is ready to be used by the model.
+
+This script was developed by Akin Yilmaz, in close exchange with the initial model developer Philip S.
+'''
 from tree_sitter import Language, Parser
 import os,re
 import numpy as np
 import subprocess
 import time
-
 
 
 # Build the language lib
@@ -35,8 +44,8 @@ def extract_function_names(code,tree):
         if node.type == "function_definition":
             # Extract the function name
             function_name_node = node.children[1] #children[0] int children[1] function1 children[2] {body}
-            function_name = code[function_name_node.start_byte : function_name_node.end_byte]
-            function_names.append(function_name.split("(")[0].replace("*","")) #Filters the name only, and remove pointer * stars
+            function_name = code[function_name_node.start_byte : function_name_node.end_byte] 
+            function_names.append(function_name.split("(")[0].replace("*","").rstrip()) #Filters the name only, and remove pointer * stars
     return function_names
 escapes = '\b\n\r\t\\'
 def filter_escape(string):
@@ -195,7 +204,7 @@ with open(function_txt_path, "a") as function_file:
         functionBlock = ""
         assemblyBlock = ""
 
-        for cfile in get_file_list("C_DATA"):#get_file_list("C_DATA"):
+        for cfile in get_file_list("C_COMPILE"):
           try:
               counter = counter + 1
               if counter % 100  == 0:
@@ -210,9 +219,13 @@ with open(function_txt_path, "a") as function_file:
                       c_code = file.read()#homogenization might disturb the function finding in objdump
 
                   #clang -o quelle.exe Quelle.c Clang alternative
-                  tree = getCodeTree(homogenizeC(c_code))
-                  function_names = extract_function_names(homogenizeC(c_code),tree)
-                  functions = extract_function(homogenizeC(c_code),tree) # Homogenize before writing to functions.txt
+                  tree = getCodeTree(c_code)
+                  function_names = extract_function_names(c_code,tree)
+
+                  functions = extract_function(c_code,tree) # Homogenize before writing to functions.txt
+
+                  for i in range(len(functions)):
+                      functions[i] = homogenizeC(functions[i])
                   file_path = 'program'
                   output_str = objdump_to_string(file_path)
                   output_rodata_str = objdump_rodata_to_string(file_path)
