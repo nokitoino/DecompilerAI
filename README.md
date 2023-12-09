@@ -32,7 +32,9 @@ We opened a new branch to work on these problems: [ObjectDecompiler](https://git
 ## Installation
 Make sure you use Linux, or a Windows-Subsystem for Linux. Soon we will test the scripts to run on Windows. To train the model effectively please check [Hardware Requirements](#hardwarerequirements).
 ### Clone the branch
-```clone git clone -b main https://github.com/nokitoino/DecompilerAI.git```
+```
+git clone -b main https://github.com/nokitoino/DecompilerAI.git
+```
 ### Install Python modules
 Make sure you have installed python3 by  `python3 --version` and Jupyter Notebook.
 First, install the required python modules.
@@ -63,27 +65,50 @@ In the FSC.py we use clang-format to format our final retrieved source code.
 
 ## Usage
 Your directory should now consist: tree-sitter-c/, CodeToTrain.py, Scraper.py, FSC.py, T5AssemblyC.ipynb
-
-We are currently setting up the main branch, so you can replicate the workflow of scraping, training, and inference. We will also explain the usage very soon.
+We now describe the entire workflow.
+### 1. Collect training data
+Open the Scraper.py and set `GITHUB_TOKEN` to your Personal Github Token.
+```
+python3 Scraper.py
+```
+This will create a directory with C files.
+Now we would like to create homogenized training pairs of the form `(C Code, Disassembly)`.
+```
+python3 CodeToTrain.py
+```
+Now you can open the Jupyter Notebook and execute the training. Make sure you have enough training data and the right hardware to start the training.
+```
+jupyter-notebook T5AssemblyC.ipynb
+```
+The last step is to connect the FSC.py script with your model. Just substitute our model with your model by giving the local path to the model and tokenizer directory.
+### One-Click-Demo
+We have uploaded a trained model to Hugging Face and connected it with the FSC. Just execute:
+```python3 FSC.py file```
+Substitute `file` with the path to the ELF file.
+The model was trained for 3 hours, 3 epochs over 10.000 files of simple C Code scraped from Github with the keyword "C Programming".
+The training was interrupted early.
 
 ## Hardware Requirements
 The model was trained on one GPU of NVIDIA V100 TESLA 32GB.
 The other scripts were run on Intel Core i7-9570H CPU, NVIDIA GTX 1660 TI 6GB, 16 GB RAM. You should be able to run them on lower specs.
 
 ## Contributing
-
 If you want to contribute to this project, please follow these guidelines. Incoming...
 
 ## Future Plans
 For simplicity, our first plan is to work on Linux ELF files compiled trough C code and be very restricted to one compiler (gcc). Later one might dare to work with C++. Our goal is also to switch to Windows PE files and use Microsoft DUMPBIN as an alternative to objdump and try different compilers.
 
 ## Acknowledgments
-
 We express our sincere gratitude to Prof. Dr. Artur Andrzejak for motivating to this project and giving suggestions.
 
 We would also like to express our sincere gratitude to [bwunicluster 2.0](https://www.scc.kit.edu/dienste/bwUniCluster_2.0.php) for their current invaluable assistance and support during the development of this project. Without their expertise and contributions, we couldn't have trained and tested our models on a large scale. We are truly thankful for their help.
 
-Further Acknoledgments incoming...
+The initial approach was a collaborative project by students Akin and Philip.
+Akin worked on the pre-processing part, and Philip on the model.
+Both were steadily in close exchange to get the workflow running in order to train a decompiler using the T5-small.
+We would like to continue with this project by experimenting with new techniques and work with larger models like T5-base and LongT5.
+
+Further Acknowledgments incoming...
 
 ## License
 
