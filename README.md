@@ -72,10 +72,12 @@ Open the Scraper.py and set `GITHUB_TOKEN` to your Personal Github Token.
 python3 Scraper.py
 ```
 This will create a directory with C files.
+### 2. Create training pairs
 Now we would like to create homogenized training pairs of the form `(C Code, Disassembly)`.
 ```
 python3 CodeToTrain.py
 ```
+### 3. Train the model
 Now you can open the Jupyter Notebook and execute the training. Make sure you have enough training data and the right hardware to start the training.
 ```
 jupyter-notebook T5AssemblyC.ipynb
