@@ -7,7 +7,7 @@ python3 Scraper.py
 The scraper will find keyword related repositories and look for simple compilable C files.
 It creates a directory C_COMPILE with all the compilable .c files it found.
 
-This scraper was developed by Akin Yilmaz, Master of Data and CS Student from University Heidelberg.
+This scraper was developed by Akin Yilmaz.
 '''
 
 import requests
