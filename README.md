@@ -60,7 +60,7 @@ sudo apt install clang-format
 sudo apt-get install build-essential
 git clone https://github.com/tree-sitter/tree-sitter-c
 ```
-Why the libraries?: The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
+Why the libraries? The build-essential installs the GCC compiler. In the FSC.py and CodeToTrain.py we use tree-sitter, which is a Parser that must be installed, along with the C-grammar that has to be cloned.
 In the FSC.py we use clang-format to format our final retrieved source code.
 
 ## Usage
