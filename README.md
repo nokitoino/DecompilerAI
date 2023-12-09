@@ -82,7 +82,9 @@ Now you can open the Jupyter Notebook and execute the training. Make sure you ha
 ```
 jupyter-notebook T5AssemblyC.ipynb
 ```
+### 4. Inference
 The last step is to connect the FSC.py script with your model. Just substitute our model with your model by giving the local path to the model and tokenizer directory.
+You can also manually do an inference by using the code provided in the Jupyter Notebook.
 ### One-Click-Demo
 We have uploaded a trained model to Hugging Face and connected it with the FSC. Just execute:
 ```
