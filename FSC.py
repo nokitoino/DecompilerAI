@@ -1,6 +1,6 @@
 """
 This script tries to recover the source code of an ELF file that was compiled with debug information.
-For experimental reasons we commented the retrieval of global variables, so we can execute this script with no debug information.
+For experimental reasons we commented the retrieval of global variables, so we can execute this script on binaries with no debug information.
 
 HOW TO USE:
 python3 FSC.py elf_file
@@ -12,7 +12,7 @@ The model has a size of 851 MB and is publicly available at https://huggingface.
 The model was trained on the BwUniCluster 2.0 on one Nvidia Tesla V100 for about 2-3 hours using T5-Base.
 In the future we will publish detailed train/val loss graphs.
 
-The model is quite useless in its current state, and we do not intend to upload any other model for ethical purposes.
+The model is quite useless in its current state.
 Do not execute this script on property that does not belong to you.
 We always respect the intellectual property of others.
 
