@@ -87,9 +87,6 @@ We have uploaded a trained model to Hugging Face and connected it with the FSC. 
 python3 FSC.py file
 ```
 Substitute `file` with the path to the ELF file.
-The model was trained for 3 hours, 3 epochs over 10.000 files of simple C Code scraped from Github with the keyword "C Programming".
-The training was interrupted early.
-
 ## Hardware Requirements
 The model was trained on one GPU of NVIDIA V100 TESLA 32GB.
 The other scripts were run on Intel Core i7-9570H CPU, NVIDIA GTX 1660 TI 6GB, 16 GB RAM. You should be able to run them on lower specs.
