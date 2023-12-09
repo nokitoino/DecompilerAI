@@ -83,7 +83,9 @@ jupyter-notebook T5AssemblyC.ipynb
 The last step is to connect the FSC.py script with your model. Just substitute our model with your model by giving the local path to the model and tokenizer directory.
 ### One-Click-Demo
 We have uploaded a trained model to Hugging Face and connected it with the FSC. Just execute:
-```python3 FSC.py file```
+```
+python3 FSC.py file
+```
 Substitute `file` with the path to the ELF file.
 The model was trained for 3 hours, 3 epochs over 10.000 files of simple C Code scraped from Github with the keyword "C Programming".
 The training was interrupted early.
