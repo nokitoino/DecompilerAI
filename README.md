@@ -64,7 +64,6 @@ Things we want to improve from now on:
   ```
   You can clearly see many aspects the prediction fail with. It can't deal with strings, since we do not give this information. It doesn't know where the conditional branch ends, and it omits the argument values for the last function call.
   In the future we will over engineer the homogenization. (CodeToTrain.py)
-- The CodeToTrain.py should be able to involve the .rodata section of an ELF file in the training data generation, with the goal to retrieve global variables/strings/structs ... (CodeToTrain.py)
 - The model should be able to work with larger Tokens (T5-Base was tested with moderate results on small functions, LongT5 might be a better alternative) (T5AssemblyC.ipynb)
 - The FSC does not care about consistency of variable names/function names (FSC.py)
 - The FSC does not involve a proper method to retrieve headers. One can generate a mapping from symbols to libraries. keywords: "nm, readelf, library" (FSC.py)
