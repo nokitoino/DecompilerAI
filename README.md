@@ -29,6 +29,7 @@ Things we want to improve from now on:
   - which ignores information about other functions that are called within the to reverse engineered function (return type, parameter type)
   - which ignores information about other functions that make use of the to reverse engineered function
   - ... (and the list goes on)
+    
   Among other aspects these will negatively impact the performance of the Transformer when not solved.
   Initial model predicts an unseen C-SMITH generated function (trained on 10k C files):
 
