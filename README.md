@@ -31,6 +31,7 @@ Things we want to improve from now on:
   - ... (and the list goes on)
   Among other aspects these will negatively impact the performance of the Transformer when not solved.
   Initial model predicts an unseen C-SMITH generated function (trained on 10k C files):
+
   Original:
   ```c
   int main (int argc, char* argv[])
