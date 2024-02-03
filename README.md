@@ -28,6 +28,7 @@ Things we want to improve from now on:
   - which cannot deal with pointers/absolute addresses into other memory sections (How do we know how many bytes are needed from other memory sections? How do we deal with pointer arithmetics?)
   - which ignores information about other functions that are called within the to reverse engineered function (return type, parameter type)
   - which ignores information about other functions that make use of the to reverse engineered function
+  - which doesn't care about constant folding happening in the C code compilation i.e. the Assembly will contain optimized expressions
   - ... (and the list goes on)
     
   Among other aspects these will negatively impact the performance of the Transformer when not solved.
@@ -141,7 +142,9 @@ The other scripts were run on Intel Core i7-9570H CPU, NVIDIA GTX 1660 TI 6GB, 1
 If you want to contribute to this project, please follow these guidelines. Incoming...
 
 ## Future Plans
-For simplicity, our first plan is to work on Linux ELF files compiled trough C code and be very restricted to one compiler (gcc). Later one might dare to work with C++. Our goal is also to switch to Windows PE files and use Microsoft DUMPBIN as an alternative to objdump and try different compilers.
+For simplicity, our first plan is to work on Linux ELF files compiled trough C code and be very restricted to one compiler (gcc). We might soon try to conduct different experiments, like trying to finetune a pretrained model (pretrained on large corpus doing Masked Label Prediction, to understand the semantics/context of code), when we see our approach to fail.
+Other things that can be done is hyper-parameter search, training on optimized/unoptimized code by different compilers, ...
+Later one might dare to work with C++. Our goal is also to switch to Windows PE files and use Microsoft DUMPBIN as an alternative to objdump and try different compilers.
 
 ## Acknowledgments
 We express our sincere gratitude to Prof. Dr. Artur Andrzejak for motivating to this project and giving suggestions.
