@@ -1,7 +1,7 @@
 # DecompilerAI
 Converting Assembly back to C code using Transformers.
 
-The main goal of this project is to test different pretrained transformers like the Hugging Face T5 to predict the high-level C/C++ code from raw disassembly.
+The main goal of this project is to use transformers like the Hugging Face T5 to predict the high-level C/C++ code from raw disassembly.
 In order to do this, we first need to scrape a lot of training data. The main idea is to train the Transformer function-wise. We compile our C Code to a binary executable, and disassemble it retrieving the assembly instructions for each function. The model should learn the seq-to-seq translation from Assembly instructions to C/C++ functions.
 
 At the end, by using different methods, we try to retrieve the entire source code, i.e. functions, global variables, used headers from the standard library, comments, pre-processors and structs/classes.
@@ -142,7 +142,7 @@ The other scripts were run on Intel Core i7-9570H CPU, NVIDIA GTX 1660 TI 6GB, 1
 If you want to contribute to this project, please follow these guidelines. Incoming...
 
 ## Future Plans
-For simplicity, our first plan is to work on Linux ELF files compiled trough C code and be very restricted to one compiler (gcc). We might soon try to conduct different experiments, like trying to finetune a pretrained model (pretrained on large corpus doing Masked Label Prediction, to understand the semantics/context of code), when we see our approach to fail.
+For simplicity, our first plan is to work on Linux ELF files compiled trough C code and be very restricted to one compiler (gcc). We might soon try to conduct different experiments, like trying to finetune a pretrained model (on a large corpus doing Masked Label Prediction, to understand the semantics/context of code) to increase the accuracy.
 Other things that can be done is hyper-parameter search, training on optimized/unoptimized code by different compilers, ...
 Later one might dare to work with C++. Our goal is also to switch to Windows PE files and use Microsoft DUMPBIN as an alternative to objdump and try different compilers.
 
