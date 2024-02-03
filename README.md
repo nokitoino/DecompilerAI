@@ -21,7 +21,48 @@ So far we only work with Linux ELF files and focus on the GCC compiler. We propo
 
 Things we want to improve from now on:
 - The Scraper should not be restricted to simple compileable source files. We should also collect larger programs that consists of multiple source and header files (using standard library, even some external libraries pcap, glib, ...) as training data. (Scraper.py)
-- The CodeToTrain.py has very straightforward homogenization techniques, which drops valueable informations like the sizes of offsets in the Assembly. This will impact the performance of the Transformer. In the future we will over engineer the homogenization.
+- The CodeToTrain.py has very straightforward homogenization techniques:
+  - which drops valueable informations like the sizes of offsets in the Assembly.
+  - which does not keep literals between the Assembly and C Code consistent (Transformers can't calculate, i.e. can't translate large numbers to their respective HEX representation)    
+  - which replaces absolute addresses by relative offsets (Again, Transformers can't calculate, this negatively impacts control flow, use labels instead)
+  - which cannot deal with pointers/absolute addresses into other memory sections (How do we know how many bytes are needed from other memory sections? How do we deal with pointer arithmetics?)
+  - which ignores information about other functions that are called within the to reverse engineered function (return type, parameter type)
+  - which ignores information about other functions that make use of the to reverse engineered function
+  - ... (and the list goes on)
+  Among other aspects these will negatively impact the performance of the Transformer when not solved.
+  Initial model predicts an unseen C-SMITH generated function (trained on 10k C files):
+  Original:
+  ```c
+  int main (int argc, char* argv[])
+  {
+      int print_hash_value = 0;
+      if (argc == 2 && strcmp(argv[1], "1") == 0)
+          print_hash_value = 1;
+      
+      platform_main_begin();
+      func_1();
+      platform_main_end(0,0);
+      
+      return 0;
+  }
+  ```
+  Prediction:
+  ```c
+  int main(int argc, char *argv[]) {
+    int i = 0;
+    if (argc == 2) {
+      if (strcmp(argv[1], "0") == 0) {
+        i = 1;
+      }
+      platform_main_begin();
+      func_1();
+      platform_main_end();
+    }
+    return 0;
+  }
+  ```
+  You can clearly see many aspects the prediction fail with. It can't deal with strings, since we do not give this information. It doesn't know where the conditional branch ends, and it omits the argument values for the last function call.
+  In the future we will over engineer the homogenization. (CodeToTrain.py)
 - The CodeToTrain.py should be able to involve the .rodata section of an ELF file in the training data generation, with the goal to retrieve global variables/strings/structs ... (CodeToTrain.py)
 - The model should be able to work with larger Tokens (T5-Base was tested with moderate results on small functions, LongT5 might be a better alternative) (T5AssemblyC.ipynb)
 - The FSC does not care about consistency of variable names/function names (FSC.py)
@@ -109,7 +150,7 @@ We would also like to express our sincere gratitude to [bwunicluster 2.0](https:
 The initial approach was a collaborative project by students Akin and Philip.
 Akin worked on the pre-processing part, and Philip on the model.
 Both were steadily in close exchange to get the workflow running in order to train a decompiler using the T5-small.
-We would like to continue with this project by experimenting with new techniques and work with larger models like T5-base and LongT5.
+We would like to continue with this project by experimenting with new techniques and work with larger models like the LongT5, which can process input lengths up to 16000 Tokens.
 
 Further Acknowledgments incoming...
 
